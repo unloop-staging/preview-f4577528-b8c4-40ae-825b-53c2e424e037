@@ -1,0 +1,485 @@
+// Generated Screen Components
+
+import { SmallAppBar, FilledButton, OutlineButton, Switch, Slider, ScrollView } from "@material";
+import { MetricCard, MetricData } from "../components/index.slint";
+import { StatusIndicator, StatusLevel } from "../components/index.slint";
+import { ValueStepper, ValueStepperCompact } from "../components/index.slint";
+import { AppData } from "data.slint";
+
+export component HomeScreen inherits Rectangle {
+    in-out property <AppData> data;
+    
+    callback brew-start-clicked();
+    callback clean-clicked();
+    
+    background: transparent;
+    
+    VerticalLayout {
+        SmallAppBar {
+            title: "Coffee Maker";
+        }
+        
+        Rectangle {
+            vertical-stretch: 1;
+            
+            ScrollView {
+                VerticalLayout {
+                    padding: 16px;
+                    spacing: 24px;
+                    
+                    Text {
+                        text: "Overview";
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #9E9E9E;
+                    }
+                    
+                    HorizontalLayout {
+                        spacing: 12px;
+                        
+                        MetricCard {
+                            data: {
+                                label: "Water Level",
+                                value: data.water-level,
+                                unit: "%",
+                                trend: "",
+                                trend-value: ""
+                            };
+                        }
+                        MetricCard {
+                            data: {
+                                label: "Bean Level",
+                                value: data.bean-level,
+                                unit: "%",
+                                trend: "",
+                                trend-value: ""
+                            };
+                        }
+                        MetricCard {
+                            data: {
+                                label: "Last Brew",
+                                value: data.last-brew-time,
+                                unit: "",
+                                trend: "",
+                                trend-value: ""
+                            };
+                        }
+                    }
+
+                    Text {
+                        text: "Status";
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #9E9E9E;
+                    }
+                    
+                    Rectangle {
+                        background: #2A2A2A;
+                        border-radius: 12px;
+                        
+                        VerticalLayout {
+                            padding: 12px;
+                            spacing: 12px;
+                            
+                            HorizontalLayout {
+                                alignment: space-between;
+                                
+                                Text {
+                                    text: "Machine";
+                                    font-size: 14px;
+                                    color: #E0E0E0;
+                                }
+                                
+                                StatusIndicator {
+                                    level: StatusLevel.ok;
+                                    label: data.machine-status;
+                                }
+                            }
+                            HorizontalLayout {
+                                alignment: space-between;
+                                
+                                Text {
+                                    text: "Heater";
+                                    font-size: 14px;
+                                    color: #E0E0E0;
+                                }
+                                
+                                StatusIndicator {
+                                    level: StatusLevel.ok;
+                                    label: data.heater-status;
+                                }
+                            }
+                        }
+                    }
+
+                    HorizontalLayout {
+                        spacing: 12px;
+                        
+                        FilledButton {
+                            text: "Brew Now";
+                            clicked => { brew-start-clicked(); }
+                        }
+                        OutlineButton {
+                            text: "Clean Cycle";
+                            clicked => { clean-clicked(); }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+export component ControlScreen inherits Rectangle {
+    in-out property <AppData> data;
+    
+    callback target-changed(float);
+    callback mode-changed(string);
+    
+    background: transparent;
+    
+    VerticalLayout {
+        SmallAppBar {
+            title: "Brew Control";
+        }
+        
+        Rectangle {
+            vertical-stretch: 1;
+            
+            VerticalLayout {
+                padding: 24px;
+                spacing: 32px;
+                alignment: center;
+                
+                VerticalLayout {
+                    spacing: 8px;
+                    alignment: center;
+                    
+                    Text {
+                        text: "Current Strength";
+                        font-size: 14px;
+                        color: #9E9E9E;
+                        horizontal-alignment: center;
+                    }
+                    
+                    HorizontalLayout {
+                        alignment: center;
+                        spacing: 4px;
+                        
+                        Text {
+                            text: data.current-strength;
+                            font-size: 64px;
+                            font-weight: 300;
+                            color: white;
+                        }
+                        
+                        Text {
+                            text: "";
+                            font-size: 24px;
+                            color: #9E9E9E;
+                            vertical-alignment: bottom;
+                        }
+                    }
+                }
+                
+                Rectangle {
+                    height: 1px;
+                    background: #424242;
+                }
+                
+                VerticalLayout {
+                    spacing: 16px;
+                    alignment: center;
+                    
+                    Text {
+                        text: "Brew Strength";
+                        font-size: 14px;
+                        color: #9E9E9E;
+                        horizontal-alignment: center;
+                    }
+                    
+                    ValueStepper {
+                        value <=> data.brew-strength;
+                        min: 1;
+                        max: 5;
+                        step: 1;
+                        unit: "";
+                        
+                        changed(val) => { target-changed(val); }
+                    }
+                }
+
+                HorizontalLayout {
+                    alignment: center;
+                    spacing: 8px;
+                    
+                    Rectangle {
+                        width: 80px;
+                        height: 40px;
+                        border-radius: 20px;
+                        background: data.mode == "small" ? #3AA1F5 : #424242;
+                        
+                        TouchArea {
+                            clicked => { mode-changed("small"); }
+                        }
+                        
+                        Text {
+                            text: "Small";
+                            font-size: 14px;
+                            color: white;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                    Rectangle {
+                        width: 80px;
+                        height: 40px;
+                        border-radius: 20px;
+                        background: data.mode == "medium" ? #3AA1F5 : #424242;
+                        
+                        TouchArea {
+                            clicked => { mode-changed("medium"); }
+                        }
+                        
+                        Text {
+                            text: "Medium";
+                            font-size: 14px;
+                            color: white;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                    Rectangle {
+                        width: 80px;
+                        height: 40px;
+                        border-radius: 20px;
+                        background: data.mode == "large" ? #3AA1F5 : #424242;
+                        
+                        TouchArea {
+                            clicked => { mode-changed("large"); }
+                        }
+                        
+                        Text {
+                            text: "Large";
+                            font-size: 14px;
+                            color: white;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+export component SettingsScreen inherits Rectangle {
+    in-out property <AppData> data;
+    
+
+    
+    background: transparent;
+    
+    VerticalLayout {
+        SmallAppBar {
+            title: "Settings";
+        }
+        
+        Rectangle {
+            vertical-stretch: 1;
+            
+            ScrollView {
+                VerticalLayout {
+                    padding-top: 8px;
+                    padding-bottom: 24px;
+
+                    Rectangle {
+                        height: 48px;
+                        
+                        Text {
+                            x: 16px;
+                            text: "Brewing";
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #3AA1F5;
+                            vertical-alignment: center;
+                        }
+                    }
+                    
+                    Rectangle {
+                        background: #2A2A2A;
+                        
+                        VerticalLayout {
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Auto Brew";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                    Switch {
+                                        checked <=> data.auto-brew-enabled;
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Brew Temperature";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                    ValueStepperCompact {
+                                        value <=> data.brew-temperature;
+                                        min: 185;
+                                        max: 205;
+                                        step: 5;
+                                        unit: "°F";
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Grind Size";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    }
+
+                    Rectangle {
+                        height: 48px;
+                        
+                        Text {
+                            x: 16px;
+                            text: "Maintenance";
+                            font-size: 14px;
+                            font-weight: 500;
+                            color: #3AA1F5;
+                            vertical-alignment: center;
+                        }
+                    }
+                    
+                    Rectangle {
+                        background: #2A2A2A;
+                        
+                        VerticalLayout {
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Clean Reminders";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                    Switch {
+                                        checked <=> data.clean-reminders;
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Descale Machine";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                    Text {
+                                        text: "";
+                                        font-size: 14px;
+                                        color: #9E9E9E;
+                                        vertical-alignment: center;
+                                    }
+                                }
+                            }
+                            Rectangle {
+                                height: 56px;
+                                
+                                HorizontalLayout {
+                                    padding-left: 16px;
+                                    padding-right: 16px;
+                                    
+                                    VerticalLayout {
+                                        horizontal-stretch: 1;
+                                        alignment: center;
+                                        
+                                        Text {
+                                            text: "Total Brews";
+                                            font-size: 16px;
+                                            color: white;
+                                        }
+                                    }
+                                    
+                                    Text {
+                                        text: data.total-brews;
+                                        font-size: 14px;
+                                        color: #9E9E9E;
+                                        vertical-alignment: center;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
